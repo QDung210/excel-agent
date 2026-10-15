@@ -9,7 +9,7 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from . import config, sources, storage, templates, workspaces
+from . import config, mock_fill, sources, storage, templates, workspaces
 from .errors import InvalidOperation
 from .schemas import AnalyzeRequest, AnalyzeResponse, ClarifyAnswers, ClarifyQuestion
 
@@ -105,9 +105,44 @@ def _questions(prompt: str, b: sources.SourceBundle, mode: str,
     return qs[:5], warnings
 
 
+def _mock_questions(state: dict, prompt: str) -> tuple[list[ClarifyQuestion], list[str]]:
+    """The user explicitly asked for mock data and attached no source: the AI drafts values, the user reviews them."""
+    from . import template_fill
+    vi = is_vi(prompt)
+    if config.llm_mode() != "azure":
+        return [], [_t(vi, "Tạo dữ liệu giả lập cần Azure OpenAI (đang ở chế độ mock): mẫu sẽ không được điền.",
+                       "Generating mock data needs Azure OpenAI (mock mode): the template is not filled.")]
+    try:
+        src, _ = template_fill._template_source(state)
+        text, n, warns = mock_fill.propose(src, prompt)
+    except Exception as e:                               # noqa: BLE001 - reported, falls back to the normal question
+        return [], [f"Could not generate mock data ({type(e).__name__}); enter values below or retry."]
+    if not n:
+        return [], warns + ["The AI proposed no mock values for this template."]
+    state["mock"] = {"cells": n}
+    return [
+        ClarifyQuestion(
+            id="mock_apply", type="select", required=True, options=["apply", "blank"], default="apply",
+            question=_t(vi, f"AI đã soạn dữ liệu GIẢ LẬP cho {n} ô của mẫu. Điền vào file?",
+                        f"The AI drafted MOCK data for {n} template cell(s). Fill them in?"),
+            explanation=_t(vi, "Đây là dữ liệu giả lập theo yêu cầu của bạn, không phải dữ liệu thật. 'blank' = giữ "
+                               "nguyên mẫu. Nhãn và công thức không bị đụng; bản gốc vẫn là revision 1.",
+                           "This is fictional data you asked for, not real data. 'blank' keeps the template as is. "
+                           "Labels and formulas are untouched; the original stays revision 1.")),
+        ClarifyQuestion(
+            id="mock_cells", type="text", required=False, default=text,
+            question=_t(vi, "Xem và sửa dữ liệu giả lập (mỗi dòng 'Ô: giá trị', xoá dòng để bỏ qua ô đó)",
+                        "Review and edit the mock data (one 'CELL: value' per line; delete a line to skip it)"),
+            explanation=_t(vi, "\\n trong giá trị là xuống dòng trong ô.", "\\n inside a value is a line break.")),
+    ], warns
+
+
 def _plan(mode: str, b: sources.SourceBundle, ready: dict) -> list[str]:
     steps = [f"Read {len(b.names)} source file(s): {len(b.facts)} fact(s), {len(b.tables)} table(s)"]
-    if mode == "template" and ready.get("structure"):
+    if mode == "template" and ready.get("mock"):
+        steps.append(f"Fill up to {ready['mock']['cells']} cell(s) with AI-generated MOCK data that you reviewed "
+                     "(labels, formulas and styles untouched); the workbook is marked as mock data")
+    elif mode == "template" and ready.get("structure"):
         from . import restructure
         p = restructure.effective(ready["structure"])
         cols = p["columns"]
@@ -463,7 +498,12 @@ def analyze(ws_id: str, req: AnalyzeRequest) -> AnalyzeResponse:
             missing = [d["label"] for i, d in enumerate(prop["kv"]) if not d["target"] and i not in asked]
             state["proposal"], state["warnings"] = prop, state["warnings"] + prop["warnings"]
             state["mapping"] = _mapping_rows(state, b, slots)
+        if ws["mode"] == "template" and not b.names and not structure and mock_fill.wants_mock(req.prompt):
+            mq, mock_warns = _mock_questions(state, req.prompt)
+            state["warnings"] += mock_warns
         qs, warns = _questions(req.prompt, b, ws["mode"], missing)
+        if state.get("mock"):
+            qs = [q for q in qs if q.id != "figures"]
         qs = mq + qs
         state["warnings"] += warns
         state["questions"] = [q.model_dump() for q in qs]
@@ -489,7 +529,7 @@ def clarify(ws_id: str, body: ClarifyAnswers) -> AnalyzeResponse:
     for qid, q in qs.items():
         v = body.answers.get(qid, q.get("default"))
         if isinstance(v, str):
-            v = v.strip()[:4000]
+            v = v.strip()[:mock_fill.MAX_ANSWER if qid == "mock_cells" else 4000]
         if v in (None, "") and q["required"]:
             raise InvalidOperation(f"Question '{qid}' needs an answer.")
         if q["type"] == "select" and v not in (None, "") and v not in (q["options"] or []):

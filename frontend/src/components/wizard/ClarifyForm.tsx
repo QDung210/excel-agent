@@ -4,8 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { ClarifyAnswerValue, ClarifyQuestion } from "@/lib/types";
+
+/** Long editable proposals (e.g. AI mock data as 'CELL: value' lines) get a textarea. */
+const multiline = (q: ClarifyQuestion) =>
+  q.id === "mock_cells" || (typeof q.default === "string" && q.default.includes("\n"));
 
 interface ClarifyFormProps {
   questions: ClarifyQuestion[];
@@ -102,7 +107,20 @@ export function ClarifyForm({ questions, submitting, onSubmit, submitLabel, extr
                 </SelectContent>
               </Select>
             )}
-            {q.type === "text" && (
+            {q.type === "text" && multiline(q) && (
+              <Textarea
+                id={id}
+                rows={14}
+                spellCheck={false}
+                className="max-h-96 font-mono text-xs md:text-xs"
+                value={(values[q.id] as string) ?? ""}
+                onChange={(e) => set(q.id, e.target.value)}
+                aria-invalid={invalid}
+                aria-required={q.required}
+                aria-describedby={describedBy}
+              />
+            )}
+            {q.type === "text" && !multiline(q) && (
               <Input
                 id={id}
                 value={(values[q.id] as string) ?? ""}

@@ -133,3 +133,25 @@ def test_stripped_cache_leaves_no_text_in_numeric_cells(wbs, tmp_path):
                     float(v.group(1))                     # raises if a numeric cell carries text
     from openpyxl import load_workbook
     assert load_workbook(dst, data_only=True)["Daily Report"]["L26"].value is None
+
+
+def test_explicit_style_zero_is_kept(tmp_path):
+    """Cells written as s="0" (common in exported forms) keep the attribute, so validation passes."""
+    import re
+    from openpyxl import Workbook
+    wb = Workbook()
+    wb.active["A1"], wb.active["B1"] = "N", 1
+    raw, src = tmp_path / "raw.xlsx", tmp_path / "s0.xlsx"
+    wb.save(raw)
+    with zipfile.ZipFile(raw) as zi, zipfile.ZipFile(src, "w", zipfile.ZIP_DEFLATED) as zo:
+        for n in zi.namelist():
+            data = zi.read(n)
+            if n == "xl/worksheets/sheet1.xml":
+                data = re.sub(rb'<c r="(A1|B1)"(?![^>]*\bs=)', rb'<c r="\1" s="0"', data)
+                assert data.count(b's="0"') == 2
+            zo.writestr(n, data)
+    dst = tmp_path / "out.xlsx"
+    st = apply_actions(str(src), str(dst), [sv("Sheet", "A1", "Y"), sv("Sheet", "B1", 2)])
+    rep = validate(str(src), str(dst), st)
+    assert rep["pass"], rep["errors"]
+    assert load_workbook(dst)["Sheet"]["A1"].value == "Y"

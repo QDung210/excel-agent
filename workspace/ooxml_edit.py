@@ -192,8 +192,9 @@ def _sheet_refs(formula_text: str) -> set[str]:
 
 
 # ---------------------------------------------------------------- sheet patch
-def _cell_xml(ref: str, style: str | None, kind: str, value: Any, sst: _SST) -> str:
-    s = f' s="{style}"' if style and style != "0" else ""
+def _cell_xml(ref: str, style: str | None, kind: str, value: Any, sst: _SST, keep: bool = False) -> str:
+    """keep=True: an existing cell keeps its style attribute verbatim (even an explicit s="0")."""
+    s = f' s="{style}"' if style and (keep or style != "0") else ""
     if kind == "blank":
         return f'<c r="{ref}"{s}/>'
     if kind in ("number", "date"):
@@ -293,7 +294,7 @@ def _patch_row(sheet: str, rnum: int, row_attrs: str, body: str, cols: dict[int,
             if k == "date" and not styles.is_date(int(a.get("s", "0"))):
                 stats.warnings.append(f"{sheet}!{a['r']}: stored as a date serial but the cell has no date format.")
             stats.changed.append(f"{sheet}!{a['r']}")
-            out.append(_cell_xml(a["r"], a.get("s"), k, v, sst))
+            out.append(_cell_xml(a["r"], a.get("s"), k, v, sst, keep=True))
         else:
             out.append(m.group(0))
     out.append(body[pos:])

@@ -276,3 +276,71 @@ def test_table_with_different_headers_is_guessed_and_columns_asked():
         else:
             assert "Bút bi" not in row9 and any("odd.csv" in w for w in run.result["warnings"])
         assert s["B3"].value == "Công ty ABC"
+
+
+def _mock_template() -> bytes:
+    from openpyxl import Workbook
+    wb = Workbook()
+    s = wb.active
+    s.title = "Form"
+    s["A1"], s["A2"], s["A3"], s["A4"] = "Title", "Owner", "Hours", "Total"
+    s["B1"] = "Example title"
+    s.merge_cells("B2:D2")
+    s["B4"] = "=B3*2"
+    buf = io.BytesIO()
+    wb.save(buf)
+    return buf.getvalue()
+
+
+def test_mock_intent_detection():
+    from workspace import mock_fill
+    assert mock_fill.wants_mock("Điền file excel này với nội dung là một mock ticket bất kỳ")
+    assert mock_fill.wants_mock("điền dữ liệu giả lập") and mock_fill.wants_mock("샘플 데이터로 채워줘")
+    assert not mock_fill.wants_mock("Điền mẫu") and not mock_fill.wants_mock("Fill the status report")
+
+
+def test_mock_parse_rejects_labels_formulas_merges(tmp_path):
+    from workspace import mock_fill
+    p = tmp_path / "t.xlsx"
+    p.write_bytes(_mock_template())
+    cells, warns = mock_fill.parse(p, "B1: Demo" + chr(92) + "nline2\nB3: 007\nB4: 9\nC2: x\nNope!B1: y\nB5: 12.5\nnot a line")
+    assert cells == [("Form", "B1", "Demo\nline2"), ("Form", "B3", "007"), ("Form", "B5", 12.5)]
+    assert len(warns) == 3 and any("formula" in w for w in warns) and any("merged" in w for w in warns)
+
+
+def test_mock_fill_flow_review_apply_and_decline(monkeypatch):
+    """Explicit mock request, no sources: AI drafts values, user edits them, only valid value cells are written."""
+    from workspace import mock_fill
+    monkeypatch.setattr(config, "llm_mode", lambda: "azure")
+    monkeypatch.setattr(mock_fill, "propose", lambda path, prompt: ("B1: Demo ticket\nB2: Nguyen Van A\nB3: 8", 3, []))
+    c = TestClient(create_app())
+    ws = _ws(c, template=("form.xlsx", _mock_template()))
+    body = {"prompt": "Điền file này với một mock ticket bất kỳ"}
+    r = c.post(f"/api/workspaces/{ws}/analyze", json=body).json()
+    assert r["status"] == "needs_clarification"
+    assert [q["id"] for q in r["questions"]] == ["mock_apply", "mock_cells"]
+    assert any("MOCK" in step for step in r["plan"])
+    r = c.post(f"/api/workspaces/{ws}/clarify", json={"clarification_id": r["clarification_id"], "answers": {
+        "mock_cells": "B1: Demo ticket\nB2: Nguyen Van A\nB3: 8\nB4: 100\nA1: hijack"}}).json()
+    run = runs.wait(c.post(f"/api/workspaces/{ws}/generate", json={}).json()["run_id"])
+    assert run.status == "done", run.events
+    wid = run.result["workbook_id"]
+    s = load_workbook(io.BytesIO(c.get(f"/api/workbooks/{wid}/export").content))["Form"]
+    assert (s["B1"].value, s["B2"].value, s["B3"].value, s["B4"].value) == ("Demo ticket", "Nguyen Van A", 8, "=B3*2")
+    assert s["A1"].value == "hijack"            # the user's own edit is honoured (A1 is a plain cell)
+    meta = service.get_metadata(wid)
+    assert meta["mock_data"] is True and all(x["via"] == "mock" for x in meta["fill_report"])
+    assert any("MOCK data" in w for w in run.result["warnings"]) and any("formula" in w for w in run.result["warnings"])
+    run = _run(c, ws, body, {"mock_apply": "blank"})
+    assert run.result["revision"] == 1 and any("declined" in w for w in run.result["warnings"])
+
+
+def test_mock_request_without_azure_only_warns(monkeypatch):
+    from workspace import mock_fill
+    monkeypatch.setattr(config, "llm_mode", lambda: "mock")
+    monkeypatch.setattr(mock_fill, "propose", lambda *a: (_ for _ in ()).throw(AssertionError("no LLM call")))
+    c = TestClient(create_app())
+    ws = _ws(c, template=("form.xlsx", _mock_template()))
+    r = c.post(f"/api/workspaces/{ws}/analyze", json={"prompt": "fill with dummy data"}).json()
+    assert [q["id"] for q in r["questions"]] == ["figures"]
+    assert any("Azure" in w for w in r["warnings"])
