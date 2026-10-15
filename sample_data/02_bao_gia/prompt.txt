@@ -1,0 +1,1 @@
+Lập báo giá cho khách theo yêu cầu và danh sách hàng đính kèm. Không có thông tin VAT.

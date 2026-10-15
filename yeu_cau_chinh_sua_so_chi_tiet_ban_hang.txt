@@ -1,0 +1,29 @@
+﻿YÊU CẦU CHỈNH SỬA MẪU SỔ CHI TIẾT BÁN HÀNG
+
+Bên mình đang có file Excel mẫu "SỔ CHI TIẾT BÁN HÀNG". Nhờ bạn chỉnh lại mẫu này để nhân viên kinh doanh dễ nhập liệu và bộ phận kế toán dễ theo dõi hơn. Không cần làm một file mới từ đầu; hãy sửa trực tiếp trên bản sao của file đã tải lên.
+
+Hiện tại bảng hơi nhiều cột mã mà nhân viên không sử dụng. Cột "Mã KH" có thể bỏ hẳn, vì bên mình muốn theo dõi theo tên khách hàng. Cột "Tháng" ở cuối cũng không cần nữa, vì đã có ngày bán hàng; nếu cần xem theo tháng thì sẽ lọc từ cột ngày.
+
+Một số tiêu đề nhờ đổi cho dễ hiểu: "Số HĐ" thành "Số hóa đơn"; "CK (%)" thành "Chiết khấu (%)"; "Tiền CK" thành "Tiền chiết khấu"; "Phải thu" thành "Tổng thanh toán". Cột "VAT" hiện tại nhờ đổi tên thành "Tiền VAT", vì đây phải là số tiền thuế chứ không phải phần trăm.
+
+Nhờ thêm các thông tin sau vào đúng vị trí, không dồn hết xuống cuối bảng:
+- Thêm "Tên khách hàng" ngay sau "Số hóa đơn".
+- Thêm "Đơn vị tính" ngay sau "Tên hàng" (ví dụ: cái, bộ, hộp).
+- Thêm "Thuế suất VAT (%)" ngay trước "Tiền VAT" để người nhập chọn mức thuế cho từng dòng.
+- Thêm "Ghi chú" ở cuối bảng, để nhân viên ghi tình trạng thanh toán hoặc lưu ý giao hàng.
+
+Về công thức, nhờ kiểm tra và điều chỉnh lại theo cấu trúc cột mới:
+- Thành tiền = Số lượng × Đơn giá.
+- Tiền chiết khấu = Thành tiền × Chiết khấu (%) / 100.
+- Tiền VAT = (Thành tiền - Tiền chiết khấu) × Thuế suất VAT (%) / 100.
+- Tổng thanh toán = Thành tiền - Tiền chiết khấu + Tiền VAT.
+Người nhập sẽ điền số lượng, đơn giá, tỷ lệ chiết khấu và thuế suất; các cột tính tiền phải tự động tính bằng công thức Excel. Tránh ghi cứng kết quả. Thuế suất mặc định có thể để 8% cho dòng mới, nhưng vẫn phải sửa được; đây chỉ là số liệu kiểm thử, không phải hướng dẫn áp thuế cho mọi mặt hàng.
+
+Phần thông tin đầu trang, điền "Năm: 2026" và "Đơn vị: Cửa hàng Minh Phát"; trường "Người lập" để trống cho nhân viên tự điền. Tiêu đề lớn vẫn là "SỔ CHI TIẾT BÁN HÀNG".
+
+Để mình kiểm tra công thức sau khi sửa, nhờ nhập thử ba dòng sau (đây là dữ liệu giả lập):
+1) Ngày 05/09/2026, hóa đơn HD001, khách Công ty An Phúc, mã hàng SP001, tên hàng Bàn phím cơ, đơn vị cái, số lượng 3, đơn giá 750.000 đồng, chiết khấu 5%, VAT 8%, ghi chú "Đã thanh toán".
+2) Ngày 05/09/2026, hóa đơn HD001, khách Công ty An Phúc, mã hàng SP002, tên hàng Chuột không dây, đơn vị cái, số lượng 5, đơn giá 320.000 đồng, không chiết khấu, VAT 8%, ghi chú "Giao cùng HD001".
+3) Ngày 09/09/2026, hóa đơn HD002, khách Nguyễn Minh Anh, mã hàng SP003, tên hàng Màn hình 24 inch, đơn vị cái, số lượng 2, đơn giá 2.850.000 đồng, chiết khấu 10%, VAT 8%, ghi chú "Còn công nợ".
+
+Quan trọng: giữ nguyên giao diện chuyên nghiệp hiện tại của file, gồm tiêu đề, màu xanh ở hàng header, viền bảng, cỡ chữ, độ rộng cột phù hợp, bộ lọc, định dạng ngày/tiền tệ, dropdown và các thành phần khác không liên quan. Nếu thay đổi vị trí cột thì công thức phải tham chiếu đúng cột mới. Không được để sót công thức tham chiếu sai hoặc xóa nhầm những thành phần của Excel. Hãy cho xem trước kết quả trên màn hình và xuất lại file .xlsx khi hoàn tất.

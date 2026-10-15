@@ -1,0 +1,39 @@
+BẢN GHI NHẬN KẾT QUẢ KINH DOANH THÁNG 9/2026
+Công ty TNHH Nam An Tech (dữ liệu giả lập phục vụ kiểm thử)
+Người tổng hợp: Bộ phận vận hành – 03/10/2026
+
+Chào phòng kế toán và kinh doanh,
+
+Dưới đây là những thông tin tôi tổng hợp từ hai cửa hàng Hà Nội và Hải Phòng về tình hình bán hàng trong tháng 9. Một số bạn gửi số theo đơn vị triệu đồng, một số ghi giá đầy đủ bằng VND; khi lập báo cáo vui lòng quy về cùng một đơn vị. Đây là số liệu phục vụ báo cáo nội bộ, các đơn giá ở phần bán hàng chưa bao gồm VAT. Hiện chưa có dữ liệu thuế suất và chưa hạch toán thuế, vì vậy đừng tự thêm VAT vào báo cáo.
+
+Sản phẩm đang bán trong tháng có bốn mã chính. LT14 là laptop Ultrabook A14, giá niêm yết 15,9 triệu một chiếc, giá vốn mua vào 12.400.000 đồng. MN27 là màn hình 27 inch, bán 3.450.000đ, giá vốn 2,62 triệu. Bàn phím cơ mã KB87 có giá bán 1 triệu 250 nghìn, giá vốn 780 nghìn. Chuột không dây MS02 đang để giá 390k, vốn 210.000đ. Mức giá bán nêu trên là trước chiết khấu của cửa hàng và được áp dụng thống nhất cho cả hai địa điểm trong tháng này.
+
+Về cửa hàng Hà Nội: quản lý báo đã xuất bán 18 laptop LT14, 30 màn hình MN27, 42 bàn phím KB87 và 90 chuột MS02. Tuy nhiên, trong số hàng xuất đó có một màn hình và ba chuột bị khách trả lại trong cùng tháng, hàng vẫn sử dụng được nên nhập lại kho. Các con số xuất bán vừa nêu là số TRƯỚC trả hàng, không được coi toàn bộ là sản lượng bán ròng. Trong tháng, cửa hàng có chương trình giảm giá 1% tính trên doanh thu hàng hóa SAU khi trừ các món bị trả lại. Không có khuyến mại cộng thêm nào khác tại Hà Nội.
+
+Ở Hải Phòng, đội bán hàng ghi nhận 12 chiếc LT14, 22 chiếc MN27, 36 chiếc KB87 và 68 chiếc MS02 đã giao cho khách. Có một chiếc LT14 bị trả và hai bàn phím KB87 hoàn về vì khách đổi ý. Những món trả này cũng là hàng thuộc tháng 9 và đã nhập lại kho. Riêng Hải Phòng áp dụng chiết khấu 2% trên giá trị bán ròng sau trả hàng cho tất cả bốn mã hàng. Vì vậy doanh thu sau chiết khấu của Hải Phòng không nên tính bằng cách lấy tổng xuất bán nhân 98% rồi mới trừ tiền trả hàng một lần nữa.
+
+Giá vốn hàng bán cần tính theo số lượng thực bán sau trả hàng, dùng đúng đơn giá vốn của từng mã. Công ty chưa phát sinh hư hỏng hay hao hụt hàng hóa nào khác trong kỳ. Chúng tôi không có thay đổi giá vốn theo chi nhánh trong tháng 9.
+
+Về tiền thu được từ khách: trong tháng Hà Nội đã thu 420 triệu đồng từ các giao dịch bán hàng nêu trên, còn Hải Phòng thu được 260.000.000 đồng. Phần doanh thu sau chiết khấu chưa thu được xem là công nợ phải thu cuối kỳ của các giao dịch tháng 9, không được ghi thành chi phí. Số thu tiền ở đây không bao gồm thu nợ từ các tháng trước; cũng không có khoản ứng trước của khách cho đơn hàng tháng sau. Chưa tính doanh thu tài chính hoặc chi phí lãi vay.
+
+Chi phí hoạt động phía Hà Nội được bộ phận hành chính gửi như sau: lương và phụ cấp 42,5 triệu; thuê địa điểm 11 triệu 200 nghìn; quảng cáo online 5.800.000đ; điện nước và internet 2,4 triệu; phí giao hàng do công ty chịu 1.350.000 đồng. Các khoản này là chi phí tháng 9, không cộng vào giá vốn từng sản phẩm.
+
+Hải Phòng phát sinh lương 30,6 triệu, tiền thuê mặt bằng 8,5 triệu, marketing 3 triệu 200, điện nước 1,8 triệu và vận chuyển hỗ trợ khách 1,05 triệu. Không có khoản chi phí hoạt động nào khác được xác nhận trong phạm vi dữ liệu hiện tại. Số lợi nhuận tính từ tài liệu này nên ghi rõ là ước tính trước thuế và chỉ dựa trên các khoản đã cung cấp, không phải lợi nhuận ròng đã kiểm toán.
+
+Bộ phận kho cũng bổ sung thông tin để đối chiếu tồn đầu và tồn cuối kỳ. Đầu ngày 01/09, kho Hà Nội có 25 laptop LT14, 42 màn hình MN27, 65 bàn phím KB87 và 120 chuột MS02. Trong tháng kho nhận thêm lần lượt 10 laptop, 15 màn hình, 20 bàn phím và 50 chuột. Ngoài các giao dịch bán và trả hàng đã kể, không có luân chuyển kho, xuất tặng, thất thoát hay điều chỉnh số lượng nào khác. Hàng trả về nhập lại đúng chi nhánh đã bán.
+
+Tại Hải Phòng, số đầu tháng là LT14: 20; MN27: 28; KB87: 45; MS02: 90. Đợt bổ sung hàng trong tháng nhận thêm 5 LT14, 10 MN27, 15 KB87 và 40 MS02. Không có chuyển hàng nội bộ giữa hai địa điểm trong kỳ. Nhờ kiểm tra tồn kho cuối tháng theo công thức tồn đầu + nhập - xuất ròng, không lấy số xuất trước trả hàng để trừ thẳng.
+
+Một vài ghi chú định tính của đội kinh doanh:
+- Tại Hà Nội, chuột MS02 bán chạy về số lượng nhưng giá trị doanh thu một chiếc thấp; laptop LT14 đóng góp đáng kể về doanh thu.
+- Tại Hải Phòng, tỷ lệ trả laptop cần được theo dõi trong tháng tới, dù số lượng tuyệt đối chưa lớn.
+- Phòng vận hành muốn so sánh doanh thu ròng, lợi nhuận gộp và chi phí theo hai chi nhánh. Khi nhận xét, cần dựa vào số liệu tính được thay vì suy đoán nguyên nhân tăng giảm vì tài liệu này không có dữ liệu của tháng 8.
+- Không tự ước lượng mục tiêu doanh thu, tốc độ tăng trưởng tháng, tỷ giá, thuế hoặc ngân sách chưa được cung cấp. Nếu thiếu một thông tin bắt buộc, hãy hỏi lại thay vì điền số giả.
+
+Báo cáo mà ban điều hành muốn xem nên dễ đọc, không cần quá nhiều màu. Ưu tiên một trang tổng quan về kết quả hai chi nhánh và toàn công ty, một phần chi tiết theo sản phẩm/chi nhánh, phần công nợ và chi phí, và một phần kiểm tra tồn kho. Có thể thêm biểu đồ doanh thu theo sản phẩm hoặc theo địa điểm nếu công cụ hỗ trợ; tổng tiền, tỷ suất và tồn kho nên được tính bằng công thức Excel khi phù hợp, thay vì chỉ chèn những con số tĩnh. Các con số tiền có thể hiển thị theo VND hoặc triệu đồng nhưng phải ghi rõ đơn vị và không được trộn lẫn.
+
+Trân trọng,
+Bộ phận vận hành Nam An Tech
+
+---
+GHI CHÚ VỀ DỮ LIỆU: Đây là tình huống giả lập được tạo để thử khả năng đọc hiểu và sinh Excel của AI Agent, không phải báo cáo của một doanh nghiệp có thật.

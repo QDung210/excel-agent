@@ -1,0 +1,64 @@
+/* Design tokens (spec 13). All colours live here; components use Tailwind names mapped in index.css. */
+:root {
+  --app-chrome-height: 56px;
+  --agent-panel-default-width: 32%;
+  --grid-min-width: 48%;
+  --transition-fast: 160ms;
+  --transition-normal: 220ms;
+  --radius: 0.625rem;
+
+  /* light: warm-white neutrals, one teal brand accent */
+  --background: oklch(0.986 0.003 85);
+  --surface: oklch(1 0 0);
+  --foreground: oklch(0.21 0.012 260);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--foreground);
+  --popover: oklch(1 0 0);
+  --popover-foreground: var(--foreground);
+  --primary: oklch(0.25 0.015 260);
+  --primary-foreground: oklch(0.985 0.002 85);
+  --secondary: oklch(0.962 0.004 85);
+  --secondary-foreground: var(--foreground);
+  --muted: oklch(0.962 0.004 85);
+  --muted-foreground: oklch(0.5 0.012 260);
+  --accent: oklch(0.952 0.006 85);
+  --accent-foreground: var(--foreground);
+  --destructive: oklch(0.56 0.2 27);
+  --border: oklch(0.91 0.005 85);
+  --input: oklch(0.89 0.006 85);
+  --ring: oklch(0.56 0.09 180);
+  --brand: oklch(0.52 0.09 180);
+  --brand-foreground: oklch(0.99 0 0);
+  --brand-soft: oklch(0.95 0.03 180);
+  --success: oklch(0.56 0.12 160);
+  --warning: oklch(0.6 0.13 70);
+  --warning-soft: oklch(0.97 0.035 85);
+  --stroke-subtle: color-mix(in oklab, var(--border) 72%, transparent);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* dark: charcoal, not pure black */
+    --background: oklch(0.2 0.006 260);
+    --surface: oklch(0.235 0.007 260);
+    --foreground: oklch(0.94 0.004 85);
+    --card: oklch(0.235 0.007 260);
+    --popover: oklch(0.25 0.008 260);
+    --primary: oklch(0.93 0.004 85);
+    --primary-foreground: oklch(0.22 0.01 260);
+    --secondary: oklch(0.28 0.008 260);
+    --muted: oklch(0.27 0.008 260);
+    --muted-foreground: oklch(0.7 0.01 260);
+    --accent: oklch(0.29 0.009 260);
+    --destructive: oklch(0.68 0.17 25);
+    --border: oklch(1 0 0 / 10%);
+    --input: oklch(1 0 0 / 14%);
+    --ring: oklch(0.7 0.09 180);
+    --brand: oklch(0.72 0.1 180);
+    --brand-foreground: oklch(0.2 0.01 260);
+    --brand-soft: oklch(0.3 0.04 180);
+    --success: oklch(0.72 0.13 160);
+    --warning: oklch(0.78 0.12 80);
+    --warning-soft: oklch(0.3 0.04 80);
+  }
+}

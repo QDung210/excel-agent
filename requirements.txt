@@ -1,0 +1,21 @@
+# excel-parser from the local repo (newer than PyPI's ks-xlsx-parser 0.2.1)
+-e ./excel-parser-main
+langgraph>=1.2
+langchain-openai>=1.4
+langchain-core>=1.5
+openpyxl>=3.1
+lxml>=4.9
+python-dotenv>=1.0
+toon-format==1.1.0   # official TOON encoder (compact region table for the LLM prompt)
+# web server + token counting (already imported by xlsx_template, were missing here)
+fastapi>=0.115
+uvicorn>=0.30
+python-multipart>=0.0.9
+tiktoken>=0.7
+# AI Excel Workspace
+deepagents>=0.7.24,<0.8
+XlsxWriter>=3.2
+pydantic>=2.7
+# tests
+pytest>=8
+httpx>=0.27

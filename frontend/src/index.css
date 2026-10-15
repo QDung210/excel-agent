@@ -1,0 +1,106 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "./styles/tokens.css";
+
+/* Dark mode follows the OS setting (prefers-color-scheme), no class toggle. */
+@custom-variant dark (@media (prefers-color-scheme: dark));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-stroke-subtle: var(--stroke-subtle);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  html {
+    @apply font-sans;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
+
+/* FortuneSheet: keep the grid on a light "paper" surface for legibility in both themes,
+   and let it fill its stable container. */
+.sheet-host {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  color-scheme: light;
+}
+/* Adding sheets is not a supported operation; hide the grid's "new sheet" button. */
+.sheet-host .fortune-sheettab-button[aria-label="New sheet"] {
+  display: none;
+}
+.sheet-host .fortune-container {
+  font-family: var(--font-sans);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Assistant markdown (no typography plugin; keep it compact for a side panel) */
+.chat-markdown > * + * { margin-top: 0.5rem; }
+.chat-markdown ul { list-style: disc; padding-left: 1.25rem; }
+.chat-markdown ol { list-style: decimal; padding-left: 1.25rem; }
+.chat-markdown a { color: var(--color-brand); text-decoration: underline; }
+.chat-markdown code { font-family: var(--font-mono, ui-monospace, monospace); font-size: 0.85em; background: var(--color-muted); border-radius: 4px; padding: 0.05rem 0.3rem; }
+.chat-markdown pre { overflow-x: auto; background: var(--color-muted); border-radius: 8px; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+.chat-markdown pre code { background: none; padding: 0; }
+.chat-markdown table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+.chat-markdown th, .chat-markdown td { border: 1px solid var(--color-border); padding: 0.2rem 0.4rem; text-align: left; }
+.chat-markdown h1, .chat-markdown h2, .chat-markdown h3 { font-weight: 600; }

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Excel → Template</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f6f43'/%3E%3Cpath d='M9 9h14v3H9zm0 5.5h14v3H9zm0 5.5h9v3H9z' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #ffffff; --text: #1d2330; --muted: #667085; --border: #d9dde5;
+    --accent: #1f6f43; --accent-weak: #e7f3ec; --track: #e9ecf1; --danger: #b42318; --danger-weak: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #12151b; --card: #1b2029; --text: #e7eaf0; --muted: #98a2b3; --border: #2e3542;
+      --accent: #4cc38a; --accent-weak: #16291f; --track: #2a303b; --danger: #f97066; --danger-weak: #2d1715;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px 16px;
+    background: var(--bg); color: var(--text);
+    font: 15px/1.5 "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  .card {
+    width: 100%; max-width: 560px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px;
+  }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 22px; }
+  .drop {
+    border: 2px dashed var(--border); border-radius: 12px; padding: 36px 16px; text-align: center;
+    cursor: pointer; transition: border-color .15s, background .15s;
+  }
+  .drop:hover, .drop.over { border-color: var(--accent); background: var(--accent-weak); }
+  .drop strong { display: block; font-size: 16px; margin-bottom: 4px; }
+  .drop span { color: var(--muted); font-size: 13px; }
+  input[type=file] { display: none; }
+  .file { font-weight: 600; word-break: break-all; margin-bottom: 14px; }
+  .bar { height: 12px; background: var(--track); border-radius: 99px; overflow: hidden; position: relative; }
+  .fill {
+    height: 100%; width: 0; background: var(--accent); border-radius: 99px;
+    transition: width .5s ease;
+  }
+  .fill.busy {
+    background-image: linear-gradient(45deg, rgba(255,255,255,.22) 25%, transparent 25%,
+      transparent 50%, rgba(255,255,255,.22) 50%, rgba(255,255,255,.22) 75%, transparent 75%);
+    background-size: 24px 24px; animation: stripes 1s linear infinite;
+  }
+  @keyframes stripes { to { background-position: 24px 0; } }
+  @media (prefers-reduced-motion: reduce) { .fill.busy { animation: none; } }
+  .row { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; font-size: 13px; }
+  .msg { color: var(--text); }
+  .meta { color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .note { color: var(--muted); font-size: 13px; margin-top: 14px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 18px 0; }
+  .stat { background: var(--accent-weak); border-radius: 10px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+    border: 1px solid transparent; border-radius: 10px; padding: 11px 18px; font: inherit; font-weight: 600;
+    cursor: pointer; text-decoration: none;
+  }
+  .btn.primary { background: var(--accent); color: #fff; width: 100%; }
+  @media (prefers-color-scheme: dark) { .btn.primary { color: #0d1a13; } }
+  .btn.ghost { background: transparent; color: var(--muted); border-color: var(--border); }
+  .actions { display: flex; gap: 10px; margin-top: 10px; }
+  .actions .btn { flex: 1; font-weight: 500; font-size: 14px; padding: 9px 12px; }
+  .error { background: var(--danger-weak); color: var(--danger); border-radius: 10px; padding: 12px 14px; margin: 16px 0; word-break: break-word; }
+  .ok { color: var(--accent); font-weight: 600; margin-bottom: 4px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 420px) { .stats { grid-template-columns: 1fr 1fr; } .card { padding: 20px; } }
+</style>
+</head>
+<body>
+<main class="card">
+  <h1>Excel → Template</h1>
+  <p class="sub">Upload file Excel đã điền. AI giữ lại cấu trúc (header, nhãn, công thức, dropdown) và xoá dữ liệu.</p>
+
+  <!-- 1. chọn file -->
+  <section id="pick">
+    <label class="drop" id="drop">
+      <input type="file" id="input" accept=".xlsx,.xlsm">
+      <strong>Kéo thả file vào đây hoặc bấm để chọn</strong>
+      <span>.xlsx / .xlsm, tối đa 30 MB</span>
+    </label>
+  </section>
+
+  <!-- 2. đang xử lý -->
+  <section id="work" hidden>
+    <div class="file" id="fname"></div>
+    <div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" id="bar">
+      <div class="fill busy" id="fill"></div>
+    </div>
+    <div class="row"><span class="msg" id="msg">Đang tải lên…</span><span class="meta" id="meta"></span></div>
+    <p class="note">Thường mất 2–3 phút (giới hạn token mỗi phút của Groq). Đừng đóng tab này.</p>
+    <button class="btn ghost" type="button" id="cancel" style="width:100%" disabled>Huỷ</button>
+  </section>
+
+  <!-- 3. xong -->
+  <section id="done" hidden>
+    <div class="ok">✓ Template đã sẵn sàng</div>
+    <div class="file" id="dname"></div>
+    <div class="stats">
+      <div class="stat"><b id="sCleared">–</b><span>ô dữ liệu đã xoá</span></div>
+      <div class="stat"><b id="sFormulas">–</b><span>công thức giữ nguyên</span></div>
+      <div class="stat"><b id="sTime">–</b><span>thời gian xử lý</span></div>
+    </div>
+    <a class="btn primary" id="dl" href="#">Tải template về</a>
+    <div class="actions">
+      <a class="btn ghost" id="rep" href="#">Xem report (.md)</a>
+      <button class="btn ghost" type="button" data-reset>Xử lý file khác</button>
+    </div>
+  </section>
+
+  <!-- 4. lỗi -->
+  <section id="fail" hidden>
+    <div class="error" id="err"></div>
+    <button class="btn ghost" type="button" data-reset style="width:100%">Thử lại</button>
+  </section>
+</main>
+
+<script>
+const $ = id => document.getElementById(id);
+const views = ["pick", "work", "done", "fail"];
+const show = v => views.forEach(x => $(x).hidden = x !== v);
+let timer = null;
+
+function setProgress(pct, busy) {
+  $("fill").style.width = Math.max(2, pct) + "%";
+  $("fill").classList.toggle("busy", busy);
+  $("bar").setAttribute("aria-valuenow", pct);
+}
+const fmt = s => s >= 60 ? `${Math.floor(s / 60)} phút ${s % 60}s` : `${s}s`;
+
+function fail(text) {
+  clearInterval(timer);
+  $("err").textContent = text;
+  show("fail");
+}
+
+function upload(file) {
+  if (!/\.(xlsx|xlsm)$/i.test(file.name)) return fail("Chỉ hỗ trợ file .xlsx / .xlsm");
+  show("work");
+  $("fname").textContent = file.name;
+  $("msg").textContent = "Đang tải lên…";
+  $("meta").textContent = "";
+  setProgress(0, true);
+
+  const form = new FormData();
+  form.append("file", file);
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", "/api/jobs");
+  xhr.upload.onprogress = e => {
+    if (e.lengthComputable) $("meta").textContent = `tải lên ${Math.round(100 * e.loaded / e.total)}%`;
+  };
+  xhr.onload = () => {
+    let body = {};
+    try { body = JSON.parse(xhr.responseText); } catch (_) {}
+    if (xhr.status !== 200) return fail(body.detail || `Upload lỗi (${xhr.status})`);
+    poll(body.id);
+  };
+  xhr.onerror = () => fail("Không kết nối được tới server. Server còn chạy không?");
+  xhr.send(form);
+}
+
+let currentJob = null;
+$("cancel").addEventListener("click", async () => {
+  if (!currentJob) return;
+  $("cancel").disabled = true;
+  $("cancel").textContent = "Đang huỷ…";
+  try { await fetch(`/api/jobs/${currentJob}`, { method: "DELETE" }); } catch (_) {}
+});
+
+function poll(id) {
+  clearInterval(timer);
+  currentJob = id;
+  $("cancel").disabled = false;
+  $("cancel").textContent = "Huỷ";
+  let misses = 0, shown = 0;
+  const tick = async () => {
+    let j;
+    try {
+      const r = await fetch(`/api/jobs/${id}`);
+      if (!r.ok) throw new Error((await r.json()).detail || r.status);
+      j = await r.json();
+      misses = 0;
+    } catch (e) {
+      if (++misses >= 5) fail("Mất kết nối tới server: " + e.message);
+      return;
+    }
+    // Creep toward the end of the current step (j.cap) so long LLM calls don't look frozen;
+    // asymptotic, so it never passes the real checkpoint.
+    shown = Math.max(shown, j.progress);
+    if (j.cap > shown) shown += (j.cap - shown) * 0.05;
+    const pct = j.status === "done" ? 100 : Math.floor(shown);
+    setProgress(pct, j.status === "queued" || j.status === "running");
+    $("msg").textContent = j.message || "";
+    $("meta").textContent = `${pct}% · ${fmt(j.elapsed)}`;
+    if (j.status === "done") {
+      clearInterval(timer);
+      const s = j.summary || {};
+      $("dname").textContent = j.download_name;
+      $("sCleared").textContent = (s.cleared ?? "–").toLocaleString("vi-VN");
+      $("sFormulas").textContent = (s.formulas ?? "–").toLocaleString("vi-VN");
+      $("sTime").textContent = s.seconds != null ? fmt(s.seconds) : "–";
+      $("dl").href = `/api/jobs/${id}/download`;
+      $("rep").href = `/api/jobs/${id}/report`;
+      show("done");
+      $("dl").click();            // tự tải về; nút vẫn còn để tải lại
+    } else if (j.status === "error") {
+      fail(j.message + (j.error ? " — " + j.error : ""));
+    } else if (j.status === "cancelled") {
+      fail("Đã huỷ xử lý file này.");
+    }
+  };
+  tick();
+  timer = setInterval(tick, 1500);
+}
+
+const drop = $("drop");
+$("input").addEventListener("change", e => e.target.files[0] && upload(e.target.files[0]));
+["dragenter", "dragover"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(t => drop.addEventListener(t, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => e.dataTransfer.files[0] && upload(e.dataTransfer.files[0]));
+document.querySelectorAll("[data-reset]").forEach(b => b.addEventListener("click", () => {
+  clearInterval(timer); $("input").value = ""; show("pick");
+}));
+</script>
+</body>
+</html>

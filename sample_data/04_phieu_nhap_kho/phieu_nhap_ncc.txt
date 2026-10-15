@@ -1,0 +1,15 @@
+Số phiếu: PNK-0926-018
+Ngày nhập: 22/09/2026
+Nhà cung cấp: Công ty TNHH Vật tư Bình Minh (dữ liệu giả lập)
+Kho: Kho Bình Dương
+
+| Mã vật tư | Tên vật tư | ĐVT | Số lượng | Đơn giá |
+|---|---|---|---|---|
+| VT-001 | Thép hộp 40x80 | Cây | 120 | 285000 |
+| VT-002 | Tôn lạnh 0.45mm | Tấm | 80 | 196000 |
+| VT-003 | Bulong M12 | Bộ | 500 | 4500 |
+| VT-004 | Que hàn 3.2mm | Hộp | 25 | 152000 |
+| VT-005 | Sơn chống gỉ | Thùng | 12 | 980000 |
+| VT-006 | Ốc vít tự khoan | Hộp | 40 | 68000 |
+| VT-007 | Băng keo cách điện | Cuộn | 60 | 9500 |
+| VT-008 | Găng tay bảo hộ | Đôi | 100 | 18000 |
